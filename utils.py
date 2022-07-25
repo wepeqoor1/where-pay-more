@@ -1,8 +1,7 @@
 import requests
 
 
-def get_vacancies(text: str) -> dict:
-    url = 'https://api.hh.ru/vacancies'
+def get_vacancies(url: str, text: str) -> dict:
     params = {
         "professional_role": 96,  # Specialization programmer id
         "area": 1,  # Moscow
