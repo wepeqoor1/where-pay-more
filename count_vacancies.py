@@ -15,18 +15,20 @@ if __name__ == '__main__':
         'C',
         'Go',
     ]
-    
-    programmer_languages_count = {}
 
+    url = 'https://api.hh.ru/vacancies'
+    programmer_languages_count = {}
+    
     try:
         for programmer_language in programmer_languages:
             text = f'Программист {programmer_language}'
             vacancies=get_vacancies(
+                url = url,
                 text=text,
                 )
             vacancies_count = vacancies['found']
             programmer_languages_count[programmer_language] = vacancies_count
-
+            
     except requests.HTTPError as error:
         print('Что то не получилось')
         
