@@ -62,9 +62,6 @@ if __name__ == "__main__":
                 if error.response.status_code == 400:
                     break
             all_language_vacancies += vacancies
-
-        with open('data.json', 'w', encoding='utf-8') as f:
-            json.dump(all_language_vacancies, f, ensure_ascii=False, indent=4)
         
         for vacancy in all_language_vacancies:
             average_salaries = list(
