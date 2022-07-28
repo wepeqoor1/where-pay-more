@@ -3,35 +3,35 @@ import requests
 import statistics
 
 
-URL_HEAD_HUNTER_VACANCIES = "https://api.hh.ru/vacancies"
+URL_HEAD_HUNTER_VACANCIES = 'https://api.hh.ru/vacancies'
 PROGRAMMER_LANGUAGES = [
-    "JavaScript",
-    "Java",
-    "Python",
-    "Ruby",
-    "PHP",
-    "C#",
-    "C",
-    "Go",
+    'JavaScript',
+    'Java',
+    'Python',
+    'Ruby',
+    'PHP',
+    'C#',
+    'C',
+    'Go',
 ]
  
 def predict_rub_salary(vacancy: dict) -> float | None:
-    salary = vacancy.get("salary")
+    salary = vacancy.get('salary')
     if not salary:
         return None
-    if not salary["from"]:
-        return salary["to"] * 0.8
-    if not salary["to"]:
-        return salary["from"] * 1.2
-    return (salary["to"] - salary["from"]) / 2 + salary["from"]
+    if not salary['from']:
+        return salary['to'] * 0.8
+    if not salary['to']:
+        return salary['from'] * 1.2
+    return (salary['to'] - salary['from']) / 2 + salary['from']
 
 
 def get_vacancies(url: str, text: str, page: int) -> dict:
     params = {
-        "professional_role": 96,  # Specialization programmer id
-        "area": 1,  # Moscow
-        "text": text,  # Searched text
-        "page": page,
+        'professional_role': 96,  # Specialization programmer id
+        'area': 1,  # Moscow
+        'text': text,  # Searched text
+        'page': page,
     }
     response = requests.get(url, params=params)
     response.raise_for_status()
@@ -39,7 +39,7 @@ def get_vacancies(url: str, text: str, page: int) -> dict:
     return response.json()
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
 
     salary_statistics = {}
 
@@ -50,8 +50,8 @@ if __name__ == "__main__":
         pages_number = 1
         
         while page < pages_number:
-            print(f"{programmer_language=}, {page=}")
-            text = f"Программист {programmer_language}"
+            print(f'{programmer_language=}, {page=}')
+            text = f'Программист {programmer_language}'
 
             try:
                 per_page_vacancies = get_vacancies(url=URL_HEAD_HUNTER_VACANCIES, text=text, page=page)
@@ -61,7 +61,7 @@ if __name__ == "__main__":
             pages_number = per_page_vacancies['pages']
             page += 1
                 
-            all_language_vacancies += per_page_vacancies["items"]
+            all_language_vacancies += per_page_vacancies['items']
 
         for vacancy in all_language_vacancies:
             expected_salaries = predict_rub_salary(vacancy=vacancy)
@@ -73,9 +73,9 @@ if __name__ == "__main__":
 
         language_salary_statistic = {
             programmer_language: {
-                "vacancies_found": per_page_vacancies["found"],
-                "vacancies_processed": len(all_expected_salaries),
-                "average_salary": int(statistics.mean(all_expected_salaries)),
+                'vacancies_found': per_page_vacancies['found'],
+                'vacancies_processed': len(all_expected_salaries),
+                'average_salary': int(statistics.mean(all_expected_salaries)),
             }
         }
         salary_statistics.update(language_salary_statistic)
