@@ -4,7 +4,16 @@ import statistics
 
 
 URL_HEAD_HUNTER_VACANCIES = "https://api.hh.ru/vacancies"
-
+PROGRAMMER_LANGUAGES = [
+    "JavaScript",
+    "Java",
+    "Python",
+    "Ruby",
+    "PHP",
+    "C#",
+    "C",
+    "Go",
+]
  
 def predict_rub_salary(vacancy: dict) -> float | None:
     salary = vacancy.get("salary")
@@ -32,20 +41,9 @@ def get_vacancies(url: str, text: str, page: int) -> dict:
 
 if __name__ == "__main__":
 
-    programmer_languages = [
-        "JavaScript",
-        "Java",
-        "Python",
-        "Ruby",
-        "PHP",
-        "C#",
-        "C",
-        "Go",
-    ]
-
     salary_statistics = {}
 
-    for programmer_language in programmer_languages:
+    for programmer_language in PROGRAMMER_LANGUAGES:
         all_language_vacancies = []
         all_expected_salaries = []
         page = 0
