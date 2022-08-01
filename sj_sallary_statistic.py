@@ -1,4 +1,3 @@
-import json
 import os
 import statistics
 import numpy as np
@@ -84,7 +83,7 @@ def generate_statistic_table(statistic: dict) -> None:
 if __name__ == "__main__":
     load_dotenv()
 
-    sj_url = 'https://api.superjob.ru'
+    superjob_url = 'https://api.superjob.ru'
     api_key = os.getenv('SUPER_JOB_API_KEY')
     client_id = os.getenv('SUPER_JOB_CLIENT_ID')
     login = os.getenv('SUPER_JOB_LOGIN')
@@ -92,7 +91,7 @@ if __name__ == "__main__":
 
     try:
         authorization = get_authorize(
-            url=f'{sj_url}/2.0/oauth2/password/',
+            url=f'{superjob_url}/2.0/oauth2/password/',
             client_id=client_id,
             login=login,
             password=password,
@@ -106,7 +105,7 @@ if __name__ == "__main__":
     salary_statistics = {}
 
     for programmer_language in PROGRAMMER_LANGUAGES:
-        keyword = f'{programmer_language}'
+        keyword = f'Программист {programmer_language}'
         all_expected_salaries = []
         all_language_vacancies = []
         page = 0
@@ -114,7 +113,7 @@ if __name__ == "__main__":
         while True:
             try:
                 per_page_vacancies = get_vacancies(
-                    url=f'{sj_url}/2.0/vacancies/', 
+                    url=f'{superjob_url}/2.0/vacancies/', 
                     api_key=api_key, 
                     access_token=access_token,
                     keyword=keyword,
