@@ -6,6 +6,18 @@ import requests
 from dotenv import load_dotenv
 
 
+PROGRAMMER_LANGUAGES = [
+        'JavaScript',
+        'Java',
+        'Python',
+        'Ruby',
+        'PHP',
+        'C#',
+        'C',
+        'Go',
+    ]
+
+
 def get_authorize(url: str, client_id: int, login: str, password: str, api_key: str ):
     params = {
         'client_id': client_id,
@@ -54,17 +66,6 @@ def superjob_predict_rub_salary(vacancy: dict) -> float | None:
 
 if __name__ == "__main__":
     load_dotenv()
-
-    programmer_languages = [
-        'JavaScript',
-        'Java',
-        'Python',
-        'Ruby',
-        'PHP',
-        'C#',
-        'C',
-        'Go',
-    ]
 
     sj_url = 'https://api.superjob.ru'
     api_key = os.getenv('SUPER_JOB_API_KEY')
