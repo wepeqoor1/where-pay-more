@@ -3,26 +3,28 @@ import requests
 import statistics
 
 
-URL_HEAD_HUNTER_VACANCIES = 'https://api.hh.ru/vacancies'
 PROGRAMMER_LANGUAGES = [
-    'JavaScript',
-    'Java',
-    'Python',
-    'Ruby',
-    'PHP',
-    'C#',
-    'C',
-    'Go',
-]
+        'JavaScript',
+        'Java',
+        'Python',
+        'Ruby',
+        'PHP',
+        'C#',
+        'C',
+        'Go',
+    ]
  
 def predict_rub_salary(vacancy: dict) -> float | None:
     salary = vacancy.get('salary')
+    salary_increase_ratio = 1.2
+    salary_reduction_ratio = 0.8
+    
     if not salary:
         return None
     if not salary['from']:
-        return salary['to'] * 0.8
+        return salary['to'] * salary_reduction_ratio
     if not salary['to']:
-        return salary['from'] * 1.2
+        return salary['from'] * salary_increase_ratio
     return (salary['to'] - salary['from']) / 2 + salary['from']
 
 
@@ -40,7 +42,8 @@ def get_vacancies(url: str, text: str, page: int) -> dict:
 
 
 if __name__ == '__main__':
-
+    
+    hh_url = 'https://api.hh.ru'
     salary_statistics = {}
 
     for programmer_language in PROGRAMMER_LANGUAGES:
@@ -54,7 +57,7 @@ if __name__ == '__main__':
             text = f'Программист {programmer_language}'
 
             try:
-                per_page_vacancies = get_vacancies(url=URL_HEAD_HUNTER_VACANCIES, text=text, page=page)
+                per_page_vacancies = get_vacancies(url=f'{hh_url}/vacancies', text=text, page=page)
             except requests.HTTPError as error:
                 print(error.response.json())
 
@@ -80,5 +83,5 @@ if __name__ == '__main__':
         }
         salary_statistics.update(language_salary_statistic)
 
-    with open('salary_statistics.json', 'w', encoding='utf-8') as write_file:
+    with open('hh_salary_statistics.json', 'w', encoding='utf-8') as write_file:
         json.dump(salary_statistics, write_file, ensure_ascii=False, indent=4)
