@@ -1,9 +1,11 @@
 import json
 import os
 import statistics
+import numpy as np
 import requests
 
 from dotenv import load_dotenv
+from terminaltables import SingleTable
 
 
 PROGRAMMER_LANGUAGES = [
@@ -61,7 +63,22 @@ def superjob_predict_rub_salary(vacancy: dict) -> float | None:
     if not vacancy['payment_to']:
         return vacancy['payment_from'] * salary_increase_ratio
     return (vacancy['payment_to'] - vacancy['payment_from']) / 2 + vacancy['payment_from']
+
+
+def generate_statistic_table(statistic: dict) -> None:
+    # Собираем двухмерную матрицу из словаря
+    column_titles = [['Язык программирования', 'Вакансий найдено', 'Вакансий обработано', 'Средняя зарплата']]
+    table_values = np.array([list(item.values()) for item in statistic.values()])
+    programmer_languages = np.transpose([list(statistic)])
+    np_array_values = np.hstack((programmer_languages, table_values))
+    table = np.vstack((column_titles, np_array_values)).tolist()
     
+    # Генерируем таблицу со статистикой
+    title = 'SuperJob Moscow'
+    table_instance = SingleTable(table, title)
+    table_instance.justify_columns[2] = 'right'
+    
+    return table_instance.table
 
 
 if __name__ == "__main__":
@@ -88,17 +105,13 @@ if __name__ == "__main__":
     access_token = authorization['access_token']
     salary_statistics = {}
 
-    for programmer_language in programmer_languages:
+    for programmer_language in PROGRAMMER_LANGUAGES:
         keyword = f'{programmer_language}'
         all_expected_salaries = []
-
         all_language_vacancies = []
-
         page = 0
 
         while True:
-            print(f'{programmer_language=}, {page=}')
-
             try:
                 per_page_vacancies = get_vacancies(
                     url=f'{sj_url}/2.0/vacancies/', 
@@ -134,8 +147,7 @@ if __name__ == "__main__":
             }
         }
         salary_statistics.update(language_salary_statistic)
-        
-    with open('sj_salary_statistics.json', 'w', encoding='utf-8') as write_file:
-        json.dump(salary_statistics, write_file, ensure_ascii=False, indent=4)
-        
+    
+    statistic_table = generate_statistic_table(salary_statistics)
+    print(statistic_table)
     
