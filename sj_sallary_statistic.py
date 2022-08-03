@@ -24,10 +24,14 @@ def get_vacancies(url: str, api_key: Optional[str], keyword: str, page: int) -> 
     headers = {
         'X-Api-App-Id': api_key,
     }
+    software_development_catalogue_id = 48
+    moscow_city_id = 4
+    count_objects_per_page = 100
+    
     params = {
-        'catalogues': 48,
-        'town': 'Москва',
-        'count': 100,
+        'catalogues': software_development_catalogue_id,
+        'town': moscow_city_id,
+        'count': count_objects_per_page,
         'page': page,
         'keyword': keyword,
     }
