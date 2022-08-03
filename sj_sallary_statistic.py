@@ -1,5 +1,6 @@
 import os
 import statistics
+from typing import Optional
 import numpy as np
 import requests
 
@@ -8,42 +9,27 @@ from terminaltables import SingleTable
 
 
 PROGRAMMER_LANGUAGES = [
-        'JavaScript',
-        'Java',
-        'Python',
-        'Ruby',
-        'PHP',
-        'C#',
-        'C',
-        'Go',
-    ]
+    'JavaScript',
+    'Java',
+    'Python',
+    'Ruby',
+    'PHP',
+    'C#',
+    'C',
+    'Go',
+]
 
 
-def get_authorize(url: str, client_id: int, login: str, password: str, api_key: str ):
-    params = {
-        'client_id': client_id,
-        'login': login,
-        'password': password,
-        'client_secret': api_key,
-    }
-    
-    response = requests.get(url, params=params)
-    response.raise_for_status()
-    
-    return response.json()
-
-
-def get_vacancies(url: str, api_key: str, access_token: str, keyword: str, page: int) -> dict:
+def get_vacancies(url: str, api_key: Optional[str], keyword: str, page: int) -> dict:
     headers = {
         'X-Api-App-Id': api_key,
-        'Authorization': f'Bearer {access_token}',
     }
     params = {
         'catalogues': 48,
-        'keyword': keyword,
         'town': 'Москва',
+        'count': 100,
         'page': page,
-        'count': 100
+        'keyword': keyword,
     }
     response = requests.get(url, params=params, headers=headers)
     response.raise_for_status()
@@ -64,7 +50,7 @@ def superjob_predict_rub_salary(vacancy: dict) -> float | None:
     return (vacancy['payment_to'] - vacancy['payment_from']) / 2 + vacancy['payment_from']
 
 
-def generate_statistic_table(statistic: dict) -> None:
+def generate_statistic_table(statistic: dict) -> str:
     # Собираем двухмерную матрицу из словаря
     column_titles = [['Язык программирования', 'Вакансий найдено', 'Вакансий обработано', 'Средняя зарплата']]
     table_values = np.array([list(item.values()) for item in statistic.values()])
@@ -83,53 +69,40 @@ def generate_statistic_table(statistic: dict) -> None:
 if __name__ == "__main__":
     load_dotenv()
 
-    superjob_url = 'https://api.superjob.ru'
-    api_key = os.getenv('SUPER_JOB_API_KEY')
-    client_id = os.getenv('SUPER_JOB_CLIENT_ID')
-    login = os.getenv('SUPER_JOB_LOGIN')
-    password = os.getenv('SUPER_JOB_PASSWORD')
+    sj_url = 'https://api.superjob.ru'
+    sj_api_key = os.getenv('SUPER_JOB_API_KEY')
+    sj_client_id = os.getenv('SUPER_JOB_CLIENT_ID')
+    sj_login = os.getenv('SUPER_JOB_LOGIN')
+    sj_password = os.getenv('SUPER_JOB_PASSWORD')
 
-    try:
-        authorization = get_authorize(
-            url=f'{superjob_url}/2.0/oauth2/password/',
-            client_id=client_id,
-            login=login,
-            password=password,
-            api_key=api_key
-            )
-    except requests.HTTPError as error:
-        print(f'Запрос Авторизации не отработал: \n {error.response.json()}')
-        exit(1)
-
-    access_token = authorization['access_token']
-    salary_statistics = {}
+    salary_statistics = dict()
 
     for programmer_language in PROGRAMMER_LANGUAGES:
         keyword = f'Программист {programmer_language}'
-        all_expected_salaries = []
-        all_language_vacancies = []
+        all_expected_salaries = list()
+        all_language_vacancies = list()
         page = 0
 
         while True:
             try:
                 per_page_vacancies = get_vacancies(
-                    url=f'{superjob_url}/2.0/vacancies/', 
-                    api_key=api_key, 
-                    access_token=access_token,
+                    url=f'{sj_url}/2.0/vacancies/', 
+                    api_key=sj_api_key, 
+                    # access_token=access_token,
                     keyword=keyword,
                     page = page,
                     )
             except requests.HTTPError as error:
                 print(f'Запрос на получение вакансий не отработал: \n {error.response.json()}')
                 exit(1)
-                
+
             all_language_vacancies += per_page_vacancies['objects']
 
             if per_page_vacancies['more']:
                 page += 1
             else:
                 break
-            
+
         for vacancy in all_language_vacancies:
             expected_salaries = superjob_predict_rub_salary(vacancy=vacancy)
 
