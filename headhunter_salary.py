@@ -3,7 +3,6 @@ import statistics
 
 import requests
 from tabulate import tabulate
-from dotenv import load_dotenv
 
 
 def predict_rub_salary(vacancy: dict) -> float | None:
@@ -60,7 +59,6 @@ def get_salary_statistic_table(languages: list) -> str:
 
 
 if __name__ == "__main__":
-    load_dotenv()
     
     languages = [
         'JavaScript',
