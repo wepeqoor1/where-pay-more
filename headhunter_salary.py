@@ -1,3 +1,4 @@
+import os
 import statistics
 
 import requests
@@ -55,8 +56,4 @@ def get_language_statistic(language: str):
 def get_salary_statistic_table(languages: list) -> str:
     table = list(map(get_language_statistic, languages))
     return tabulate(table, headers='keys', tablefmt="grid")
-
-
-def start(languages: list) -> str:    
-    return get_salary_statistic_table(languages)
     

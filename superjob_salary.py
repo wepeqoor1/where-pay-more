@@ -1,11 +1,9 @@
-import os
 import statistics
 from functools import partial
 from itertools import count
 
 import requests
 from tabulate import tabulate
-from dotenv import load_dotenv
 
 
 def predict_rub_salary(vacancy: dict) -> float | None:
@@ -60,10 +58,4 @@ def get_salary_statistic_table(api_key: str, languages: list) -> str:
     partial_language_salary_statistic = partial(get_language_statistic, api_key)
     table = list(map(partial_language_salary_statistic, languages))
     return tabulate(table, headers='keys', tablefmt="grid")
-
-
-def start(languages: list) -> str:
-    load_dotenv()
-    sj_api_key = os.getenv('SUPER_JOB_API_KEY')
-    return get_salary_statistic_table(sj_api_key, languages)
     
