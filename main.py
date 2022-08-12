@@ -1,8 +1,11 @@
+from dotenv import load_dotenv
+
 import superjob_salary
 import headhunter_salary
 
 
 if __name__ == '__main__':
+    load_dotenv()
     languages = [
         'JavaScript',
         'Java',
@@ -12,6 +15,9 @@ if __name__ == '__main__':
         'C#',
         'C',
         'Go',
-    ]   
-    print(superjob_salary.start(languages))
-    print(headhunter_salary.start(languages))
+    ]
+    print('SuperJob')
+    print(superjob_salary.get_salary_statistic_table(languages))
+    print('HeadHunter')
+    print(headhunter_salary.get_salary_statistic_table(languages))
+    
