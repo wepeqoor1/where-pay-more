@@ -1,5 +1,5 @@
+import os
 import statistics
-from functools import partial
 from itertools import count
 
 import requests
@@ -19,15 +19,15 @@ def predict_rub_salary(vacancy: dict) -> float | None:
         else vacancy['payment_from'] * salary_increase_ratio
 
 
-def get_language_vacancies(api_key: str, language: str) -> dict:
+def get_language_vacancies(language: str) -> dict:
     """Получаем вакансии на одной странице"""
     url = 'https://api.superjob.ru/2.0/vacancies/'
     headers = {
-        'X-Api-App-Id': api_key,
+        'X-Api-App-Id': os.getenv('SUPER_JOB_API_KEY'),
     }
     for page in count(0):
         params = {
-            'catalogues': 48,  # id категории программирование и разработка
+            'catalogues': 48,  # Specialization: programmer id
             'town': 'Москва',
             'count': 100,  # Количество вакансий на странице
             'currency': 'rub',
@@ -42,10 +42,9 @@ def get_language_vacancies(api_key: str, language: str) -> dict:
         yield from vacancy
 
 
-def get_language_statistic(api_key: str, language: str) -> dict:
+def get_language_statistic(language: str) -> dict:
     """Вычисляем среднюю зарплату по языку программирования"""
-    partial_vacancies_per_page = partial(get_language_vacancies, api_key=api_key)
-    language_vacancies = list(partial_vacancies_per_page(language=language))
+    language_vacancies = list(get_language_vacancies(language=language))
     all_expected_salaries = list(filter(lambda x: x, map(predict_rub_salary, language_vacancies)))
     return {
         'Язык программирования': language,
@@ -54,8 +53,7 @@ def get_language_statistic(api_key: str, language: str) -> dict:
         'Средняя зарплата': int(statistics.mean(all_expected_salaries))
         }
 
-def get_salary_statistic_table(api_key: str, languages: list) -> str:
-    partial_language_salary_statistic = partial(get_language_statistic, api_key)
-    table = list(map(partial_language_salary_statistic, languages))
+def get_salary_statistic_table(languages: list) -> str:
+    table = list(map(get_language_statistic, languages))
     return tabulate(table, headers='keys', tablefmt="grid")
     
