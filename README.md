@@ -1,4 +1,4 @@
-# where-pay-more
+# Programming vacancies compare
 Search salaries in HeadHunter and SuperJob for popular programming languages:
 
 ## Environment requirements
@@ -62,3 +62,6 @@ HeadHunter
 | Go                      |                490 |                   147 |             215891 |
 +-------------------------+--------------------+-----------------------+--------------------+
 ```
+
+## Project Goals
+The code is written for educational purposes on online-course for web-developers dvmn.org.
