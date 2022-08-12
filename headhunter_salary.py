@@ -27,7 +27,7 @@ def get_language_vacancies(language: str) -> dict:
     
     while page < pages_number:
         params = {
-        'professional_role': 96,  # Specialization programmer id
+        'professional_role': 96,  # Specialization: programmer id
         'area': 1,  # Moscow
         'text': f'Программист {language}',  # Searched text
         'page': page,
