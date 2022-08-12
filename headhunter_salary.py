@@ -1,4 +1,3 @@
-import os
 import statistics
 
 import requests
