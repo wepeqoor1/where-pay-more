@@ -57,19 +57,6 @@ def get_salary_statistic_table(languages: list) -> str:
     return tabulate(table, headers='keys', tablefmt="grid")
 
 
-if __name__ == "__main__":
-    
-    languages = [
-        'JavaScript',
-        'Java',
-        'Python',
-        'Ruby',
-        'PHP',
-        'C#',
-        'C',
-        'Go',
-    ]
-    
-    statistic_table = get_salary_statistic_table(languages)
-    print(statistic_table)
+def start(languages: list) -> str:    
+    return get_salary_statistic_table(languages)
     
