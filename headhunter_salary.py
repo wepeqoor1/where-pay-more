@@ -1,7 +1,5 @@
 import os
 import statistics
-from functools import partial
-from itertools import count
 
 import requests
 from tabulate import tabulate
