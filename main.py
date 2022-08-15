@@ -1,7 +1,5 @@
 from dotenv import load_dotenv
-
-import superjob_salary
-import headhunter_salary
+from table_statistic import get_salary_statistic_table
 
 
 if __name__ == '__main__':
@@ -16,8 +14,9 @@ if __name__ == '__main__':
         'C',
         'Go',
     ]
+
     print('SuperJob')
-    print(superjob_salary.get_salary_statistic_table(languages))
+    print(get_salary_statistic_table(languages))
     print('HeadHunter')
-    print(headhunter_salary.get_salary_statistic_table(languages))
+    print(get_salary_statistic_table(languages))
     

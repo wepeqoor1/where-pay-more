@@ -1,8 +1,4 @@
-import os
-import statistics
-
 import requests
-from tabulate import tabulate
 
 
 def predict_rub_salary(vacancy: dict) -> float | None:
@@ -41,19 +37,4 @@ def get_language_vacancies(language: str) -> dict:
 
         yield from per_page_vacancies['items']
 
-
-def get_language_statistic(language: str):
-    """Вычисляем среднюю зарплату по языку программирования"""
-    language_vacancies = list(get_language_vacancies(language=language))
-    all_expected_salaries = list(filter(lambda x: x, map(predict_rub_salary, language_vacancies)))
-    return {
-        'Язык программирования': language,
-        'Вакансий найдено': len(language_vacancies),
-        'Вакансий обработано': len(all_expected_salaries),
-        'Средняя зарплата': int(statistics.mean(all_expected_salaries))
-        }
-
-def get_salary_statistic_table(languages: list) -> str:
-    table = list(map(get_language_statistic, languages))
-    return tabulate(table, headers='keys', tablefmt="grid")
     
