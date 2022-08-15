@@ -11,7 +11,7 @@ $ pip install -r requirements.txt
 
 ## Environment variables
 Create `.env` file.  
-Sign up on https://api.superjob.ru/info/, get `api-key` and paste to `.env` file:  
+Sign up on https://api.superjob.ru/register, get `api-key` and paste to `.env` file:  
 SUPER_JOB_API_KEY=<`api-key`>  
 
 # How to use
