@@ -1,21 +1,18 @@
 import requests
 
+from table_statistic_tools import predict_salary
 
-def predict_rub_salary(vacancy: dict) -> float | None:
+
+def predict_rub_salary_hh(vacancy: dict):
     salary = vacancy.get('salary')
-    salary_increase_ratio = 1.2
-    salary_reduction_ratio = 0.8
-    
     if not salary:
         return None
-    if not salary['from']:
-        return salary['to'] * salary_reduction_ratio
-    if not salary['to']:
-        return salary['from'] * salary_increase_ratio
-    return (salary['to'] - salary['from']) / 2 + salary['from']
+    if salary['currency'] != 'RUR':
+        return None
+    return predict_salary(salary['from'], salary['to'])
 
 
-def get_language_vacancies(language: str) -> dict:
+def get_language_vacancies_hh(language: str) -> dict:
     """Получаем вакансии на одной странице"""
     url = 'https://api.hh.ru/vacancies/'
     page = 0
@@ -35,6 +32,4 @@ def get_language_vacancies(language: str) -> dict:
         pages_number = per_page_vacancies['pages']
         page += 1
 
-        yield from per_page_vacancies['items']
-
-    
+        return per_page_vacancies['items']
