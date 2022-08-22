@@ -13,7 +13,6 @@ def predict_rub_salary_hh(vacancy: dict):
 
 
 def get_language_vacancies_hh(language: str) -> dict:
-    """Получаем вакансии на одной странице"""
     url = 'https://api.hh.ru/vacancies/'
     page = 0
     pages_number = 1
@@ -32,4 +31,4 @@ def get_language_vacancies_hh(language: str) -> dict:
         pages_number = per_page_vacancies['pages']
         page += 1
 
-        return per_page_vacancies['items']
+        yield from per_page_vacancies['items']
