@@ -11,7 +11,7 @@ def get_language_statistic(language_vacancies: list, all_expected_salaries: list
         }
 
 
-def predict_salary(salary_from, salary_to):
+def predict_salary(salary_from, salary_to) -> int:
     salary_increase_ratio = 1.2
     salary_reduction_ratio = 0.8
     
